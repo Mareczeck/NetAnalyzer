@@ -1,10 +1,7 @@
 # NetAnalyzer
 
-Popis úlohy
-===========
-
 Úkoly
----
+===========
 
 - Infrastruktura
     - [x] Kostra projektu
