@@ -1,15 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
     <ProjectReference Include="../NetAnalyzer.Infrastracture/NetAnalyzer.Infrastructure.csproj" />
-    <ProjectReference Include="..\NetAnalyzer.Business\NetAnalyzer.Business.csproj" />
     <ProjectReference Include="..\NetAnalyzer.Domain\NetAnalyzer.Domain.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 </Project>

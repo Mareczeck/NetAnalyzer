@@ -5,18 +5,18 @@ using NetAnalyzer.Web.Models;
 
 namespace NetAnalyzer.Web.Controllers;
 
+/// <summary>
+/// For this app I make do with one controller
+/// </summary>
 public class HomeController : Controller
 {
-
-
     public IActionResult Index()
     {
         return View();
     }
 
-    public IActionResult Statistics([FromRoute]string id)
+    public IActionResult Statistics()
     {
-        // Načtení statistik
         return View();
     }
 
@@ -24,7 +24,9 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Upload(DataSetUpload model)
     {
-        // TODO - Service na uložení do souboru a zafrontování zpracování
+        TempData.Clear();
+        TempData.TryAdd("result", "uploaded");
+
         return RedirectToAction(nameof(Index));
     }
 
