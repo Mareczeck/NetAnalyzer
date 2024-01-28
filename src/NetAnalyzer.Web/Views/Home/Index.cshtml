@@ -1,4 +1,4 @@
-﻿@model DataSetUpload
+﻿@model DataSetUploadModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -6,12 +6,20 @@
 
 <div>
     
-    @if(TempData.ContainsKey("result"))
+    @if (TempData["SuccessMessage"] != null)
     {
-        TempData.Remove("result");
         <div class="alert alert-success">
-            <span class="alert-heading">Dataset was successfully sent for processing</span>
+            @TempData["SuccessMessage"]
         </div>
+        TempData.Remove("SuccessMessage"); // Remove the success message from TempData
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+        TempData.Remove("ErrorMessage"); // Remove the error message from TempData
     }
 
     @Html.AntiForgeryToken()

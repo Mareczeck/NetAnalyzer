@@ -29,6 +29,11 @@ public class AppDbContext : DbContext
             .Property(e => e.Id)
             .ValueGeneratedOnAdd();
 
+            
+        modelBuilder.Entity<DatasetInfo>()
+            .Property(e => e.Id)
+            .ValueGeneratedOnAdd();
+
         // Configure primary key and foreign key relationship
         modelBuilder.Entity<DatasetInfo>()
             .HasKey(r => r.Id);

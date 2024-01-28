@@ -7,6 +7,8 @@ namespace NetAnalyzer.Business;
 
 public interface IDatasetService {
 
+    public int CreateDataset();
+    public void ProcessDataset(int datasetId, Stream stream);
 }
 
 public class DatasetService : IDatasetService
@@ -21,6 +23,17 @@ public class DatasetService : IDatasetService
         this.dbContext = dbContext;
     }
 
+
+    public int CreateDataset()
+    {
+        var ds = new DatasetInfo(State.New);
+        var dataset = dbContext.DataSets.Add(ds);
+
+        dbContext.SaveChanges();
+
+        return ds.Id;
+    }
+    
     public void ProcessDataset(int datasetId, Stream stream)
     {
         using var transaction = dbContext.Database.BeginTransaction();
@@ -36,7 +49,7 @@ public class DatasetService : IDatasetService
             }
 
             dbContext.SaveChanges();
-
+            
             transaction.Commit();
         }
         catch{

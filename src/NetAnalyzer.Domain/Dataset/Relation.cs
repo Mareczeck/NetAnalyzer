@@ -14,4 +14,7 @@ public record class Relation(int DatasetID, int MemberOne, int MemberTwo)
     public int Id { get; set; }
 }
 
-public record class DatasetInfo(int Id, State State);
+public record class DatasetInfo(State State)
+{
+    public int Id { get; set; }
+}

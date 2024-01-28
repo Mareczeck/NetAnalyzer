@@ -2,9 +2,8 @@
 
 namespace NetAnalyzer.Web;
 
-public class DataSetUpload
+public class DataSetUploadModel
 {
-    [Display(Name = "Dataset")]
     [Required]
     public required IFormFile FormFile { get; set; }
 }
