@@ -22,7 +22,6 @@
 
 
   <ItemGroup>
-    <!-- Include YourFile.txt in the output directory -->
     <Content Include="network-data.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

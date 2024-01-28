@@ -1,6 +1,6 @@
 namespace NetAnalyzer.Infrastructure;
 
-public class MacOSFileManipulationService : IFileManipulationService
+public class MacOSFileManipulationService : DefaultFileManipulationService
 {
     /// <summary>
     /// MacOS usage - I dont want to share my home name

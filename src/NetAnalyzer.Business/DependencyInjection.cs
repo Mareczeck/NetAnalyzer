@@ -1,6 +1,14 @@
-﻿namespace NetAnalyzer.Business;
+﻿using Microsoft.Extensions.DependencyInjection;
 
-public class DependencyInjection
+namespace NetAnalyzer.Business;
+
+public static class DependencyInjection
 {
+
+    public static IServiceCollection AddBusiness(this IServiceCollection services)
+    {
+
+        return services;
+    }
 
 }

@@ -1,27 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NetAnalyzer.Infrastructure.Persistence;
 
 namespace NetAnalyzer.Infrastructure;
 
-public class SqlLiteDatabaseInitializer : IDatabaseInitializer
+public class SqlLiteDatabaseInitializer(AppDbContext dbContext) : IDatabaseInitializer
 {
-    private readonly IConfiguration configuration;
-    private readonly IFileManipulationService fileManipulation;
-
-    public SqlLiteDatabaseInitializer(IConfiguration configuration, IFileManipulationService fileManipulation)
-    {
-        this.configuration = configuration;
-        this.fileManipulation = fileManipulation;
-    }
+    private readonly AppDbContext dbContext = dbContext;
 
     public void InitializeDatabase()
     {
-        string? databasePath = configuration["DatabasePath"];
-        
-        databasePath = fileManipulation.ResolvePath(databasePath);
-
-        if (!File.Exists(databasePath))
+        Console.WriteLine("Creating the database...");
+        if (dbContext.Database.EnsureCreated())
         {
-            Console.WriteLine("Creating the database...");
 
 
             Console.WriteLine("Database created successfully.");

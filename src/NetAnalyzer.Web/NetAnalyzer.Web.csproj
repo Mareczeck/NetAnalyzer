@@ -6,6 +6,10 @@
     <ProjectReference Include="..\NetAnalyzer.Domain\NetAnalyzer.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views/Dataset/" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>

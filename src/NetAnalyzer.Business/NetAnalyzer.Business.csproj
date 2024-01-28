@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    
   <ItemGroup>
     <ProjectReference Include="../NetAnalyzer.Infrastracture/NetAnalyzer.Infrastructure.csproj" />
     <ProjectReference Include="..\NetAnalyzer.Domain\NetAnalyzer.Domain.csproj" />

@@ -1,4 +1,7 @@
 using NetAnalyzer.Infrastructure;
+using NetAnalyzer.Business;
+using NetAnalyzer.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 var mvc = builder.Services.AddControllersWithViews();
 
 builder.Services
-    .AddInfrastructure();
+    .AddBusiness()
+    .AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -17,6 +21,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -29,7 +35,10 @@ app.MapControllerRoute(
 
 
 // Init database structure
-var dbInitializer = app.Services.GetRequiredService<IDatabaseInitializer>();
-dbInitializer.InitializeDatabase();
+{
+    using var scope = app.Services.CreateScope();
+    var dbInitializer = scope.ServiceProvider.GetRequiredService<IDatabaseInitializer>();
+    dbInitializer.InitializeDatabase();
+}
 
 app.Run();

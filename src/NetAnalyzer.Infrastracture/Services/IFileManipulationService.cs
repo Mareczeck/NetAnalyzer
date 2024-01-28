@@ -6,4 +6,6 @@ public interface IFileManipulationService
         return path;
 
     }
+
+    void SaveStreamToFile(string path, string fileName, Stream stream);
 }

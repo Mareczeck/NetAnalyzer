@@ -14,12 +14,6 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult Statistics([FromRoute]string id)
-    {
-        // Načtení statistik
-        return View();
-    }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Upload(DataSetUpload model)

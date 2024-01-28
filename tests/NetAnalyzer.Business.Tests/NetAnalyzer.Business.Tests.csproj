@@ -21,4 +21,9 @@
     <ProjectReference Include="..\..\src\NetAnalyzer.Business\NetAnalyzer.Business.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="network-data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
