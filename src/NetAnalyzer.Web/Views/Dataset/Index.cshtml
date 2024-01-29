@@ -10,8 +10,8 @@
         <tr>
             <th>DatasetID</th>
             <th>State</th>
-            <th>Member Counts</th>
-            <th>Average Relations</th>
+            <th>Members [#]</th>
+            <th>Relations [Ø]</th>
             <th>Action</th>
         </tr>
     </thead>
@@ -24,7 +24,7 @@
                 <td>@item.Members</td>
                 <td>@Html.DisplayFor(m => item.AverageRelation)</td>
                 <td>
-                    @Html.ActionLink("Dataset", "Detail", "Detail", null, new { @class = "btn btn-primary"})
+                    @Html.ActionLink("Detail", "Detail", "Dataset", null, new { @class = "btn btn-primary"})
                 </td>
             </tr>
         }

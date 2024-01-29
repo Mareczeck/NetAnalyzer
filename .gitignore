@@ -485,3 +485,6 @@ $RECYCLE.BIN/
 .vscode/launch.json
 .vscode/settings.json
 .vscode/tasks.json
+src/NetAnalyzer.Web/DataStorage.db
+src/NetAnalyzer.Web/DataStorage.db-shm
+src/NetAnalyzer.Web/DataStorage.db-wal
