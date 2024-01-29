@@ -1,0 +1,13 @@
+@using System;
+@using System.ComponentModel;
+@using System.Reflection;
+
+@model Enum
+
+@{
+    FieldInfo field = Model.GetType().GetField(Model.ToString());
+    DescriptionAttribute attribute = (DescriptionAttribute)field.GetCustomAttribute(typeof(DescriptionAttribute));
+    var description = attribute == null ? Model.ToString() : attribute.Description;
+}
+
+@description

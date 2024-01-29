@@ -1,0 +1,37 @@
+﻿@using NetAnalyzer.Domain.Dataset;
+
+@model DatasetStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Statistics";
+}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>DatasetID</th>
+            <th>State</th>
+            <th>Member Counts</th>
+            <th>Average Relations</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Statistics ?? new List<DatasetInfoStatistic>())
+        {
+            <tr>
+                <td>@item.DatasedId</td>
+                <td>@Html.DisplayFor(m => item.State)</td>
+                <td>@item.Members</td>
+                <td>@Html.DisplayFor(m => item.AverageRelation)</td>
+                <td>
+                    @Html.ActionLink("Dataset", "Detail", "Detail", null, new { @class = "btn btn-primary"})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    
+
+}

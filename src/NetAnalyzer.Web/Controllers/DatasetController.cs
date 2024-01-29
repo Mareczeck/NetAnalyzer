@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NetAnalyzer.Business;
 using NetAnalyzer.Web.Models;
 
 namespace NetAnalyzer.Web.Controllers;
@@ -10,12 +11,23 @@ namespace NetAnalyzer.Web.Controllers;
 /// </summary>
 public class DatasetController : Controller
 {
-    public IActionResult Index()
+    private readonly IDatasetService datasetService;
+
+    public DatasetController(IDatasetService datasetService)
     {
-        return View();
+        this.datasetService = datasetService;
     }
 
-    public IActionResult Statistics()
+    public IActionResult Index()
+    {
+        var model = new DatasetStatisticsViewModel()
+        {
+            Statistics = datasetService.LoadDatasets()
+        };
+        return View(model);
+    }
+
+    public IActionResult Detail(int id)
     {
         return View();
     }

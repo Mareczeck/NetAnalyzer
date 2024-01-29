@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NetAnalyzer.Web;
+namespace NetAnalyzer.Web.Models;
 
-public class DataSetUploadModel
+public class DataSetUploadViewModel
 {
     [Required]
     public required IFormFile FormFile { get; set; }

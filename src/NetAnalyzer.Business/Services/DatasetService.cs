@@ -1,20 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data.Common;
+using System.Linq;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using NetAnalyzer.Domain.Dataset;
 using NetAnalyzer.Infrastructure;
 using NetAnalyzer.Infrastructure.Persistence;
 
 namespace NetAnalyzer.Business;
 
-public interface IDatasetService {
-
-    public int CreateDataset();
-    public void ProcessDataset(int datasetId, Stream stream);
-}
-
 public class DatasetService : IDatasetService
 {
     private readonly INetworkDataLoaderService networkDataLoader;
     private readonly AppDbContext dbContext;
+
+    private const string MEMBER_COUNT_COMMAND = @"SELECT COUNT(*) FROM (
+        SELECT [MemberOne] FROM [Relations] WHERE DatasetID = @DatasetId
+        UNION
+        SELECT [MemberTwo] FROM [Relations] WHERE DatasetID = @DatasetId);";
+
+        
+    private const string SUM_RELATIONS_COMMAND = @"SELECT SUM(cnt) FROM (
+        SELECT count(MemberOne) as cnt FROM [Relations] WHERE DatasetID = @DatasetId GROUP BY MemberOne 
+        UNION ALL
+        SELECT count(MemberTwo) as cnt FROM [Relations] WHERE DatasetID = @DatasetId GROUP BY MemberTwo)";
 
 
     public DatasetService(INetworkDataLoaderService networkDataLoader, AppDbContext dbContext)
@@ -33,7 +41,45 @@ public class DatasetService : IDatasetService
 
         return ds.Id;
     }
-    
+
+    public List<DatasetInfoStatistic>? LoadDatasets()
+    {
+        var dataSets = dbContext.DataSets.Select(x => new DatasetInfoStatistic()
+        {
+            DatasedId = x.Id,
+            State = x.State
+        }).ToList();
+
+        var connection = dbContext.Database.GetDbConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@DatasetId";
+        command.Parameters.Add(parameter);
+
+        foreach (var item in dataSets)
+        {
+            parameter.Value = item.DatasedId;
+            command.CommandText = MEMBER_COUNT_COMMAND;
+
+            var result = command.ExecuteScalar();
+            var count = result != null ? Convert.ToInt32(result) : throw new Exception();
+            item.Members = count;
+
+            if(count > 0){
+                command.CommandText = SUM_RELATIONS_COMMAND;
+
+                result = command.ExecuteScalar();
+                var sum = result != null ? Convert.ToInt32(result) : throw new Exception();
+                item.AverageRelation = (decimal)sum / count;
+            }        
+        }
+        
+        connection.Close();
+        return dataSets;
+    }
+
     public void ProcessDataset(int datasetId, Stream stream)
     {
         using var transaction = dbContext.Database.BeginTransaction();
@@ -49,7 +95,7 @@ public class DatasetService : IDatasetService
             }
 
             dbContext.SaveChanges();
-            
+
             transaction.Commit();
         }
         catch{

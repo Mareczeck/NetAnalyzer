@@ -22,7 +22,7 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Upload(DataSetUploadModel model)
+    public IActionResult Upload(DataSetUploadViewModel model)
     {
         try
         {
