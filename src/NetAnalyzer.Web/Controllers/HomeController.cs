@@ -26,7 +26,7 @@ public class HomeController : Controller
     {
         try
         {
-            var id = datasetService.CreateDataset();
+            var id = datasetService.CreateDataset(model.DatasetName);
             datasetService.ProcessDataset(id, model.FormFile.OpenReadStream());
             
             if (TempData["SuccessMessage"] == null)
@@ -38,7 +38,7 @@ public class HomeController : Controller
         {
             if (TempData["ErrorMessage"] == null)
             {
-                TempData["ErrorMessage"] = "An error occurred: " + ex.Message;
+                TempData["ErrorMessage"] = "An error occurred during process.";
             }
         }
         // TODO - Service na uložení do souboru a zafrontování zpracování

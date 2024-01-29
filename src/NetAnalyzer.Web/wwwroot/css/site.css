@@ -20,3 +20,23 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.codeExample {
+    padding: 15px;
+    background: lightgrey;
+}
+
+.column-separator {
+  border-right: 1px solid lightgray;
+}
+
+.highlight {
+  background-color: lightyellow; 
+  padding: 15px; 
+}

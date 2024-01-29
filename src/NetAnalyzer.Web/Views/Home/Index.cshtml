@@ -23,18 +23,68 @@
     }
 
     @Html.AntiForgeryToken()
-    <form enctype="multipart/form-data" method="post">
+
+    <h1>Network data analyzer</h1>
+
         <div class="row">
-            
-            <label asp-for="FormFile" class="form-label">Select dataset for processing:</label>
-            <div class="col-md-4">
-                <input asp-for="FormFile" type="file" class="form-control" required />
+
+            <div class="col-md-6 border-end">
+                <h2>Usage Description</h2>
+                <p>This web application allows you to submit network data for analysis. The data should be in a specific format: each line consists of two numbers separated by a space, representing a connection between two members of the network. No alphabetical characters are allowed, only numbers. For instance, the line "1 2" signifies that member 1 and member 2 are friends.</p>
+                <p>Upon submission, the uploaded data will be stored in the web application's database for further analysis. The system counts the total number of members and calculates the average number of relations for each member.</p>
             </div>
 
+            <div class="col-md-6">                
+                <h2>Insert dataset</h2>
+                
+                <div class="highlight">
+                    <form enctype="multipart/form-data" method="post">
+                        <div class="row mb-2">                    
+                            <label asp-for="DatasetName" class="form-label">Dataset name:</label>
+                            <div class="col-sd-12 mb-2">
+                                <input asp-for="DatasetName" type="text" class="form-control" required />
+                            </div>
+                        </div>
+                        
+                        <div class="row">            
+                            <label asp-for="FormFile" class="form-label">Select dataset for processing:</label>
+                            <div class="col-sd-12">
+                                <input asp-for="FormFile" type="file" class="form-control" required />
+                            </div>
+                        </div>
+                        
+                        <input asp-action="Upload" class="btn btn-primary mt-2" type="submit" value="Upload" />                        
+                    </form>
+                </div>
+
+                <h3>Examples</h3>
+                        <p>Here are some examples of correctly and incorrectly formatted data:</p>
+
+                        <ol>
+                            <li>
+                                <strong>Good Format:</strong>
+                                <div class="codeExample">
+                                    <code class="lang-txt">
+                                        1 2<br>
+                                        2 3<br>
+                                        4 5
+                                    </code>
+                                </div>
+                            </li>
+                            <li>
+                                <strong>Bad Format:</strong>
+                                <div class="codeExample">
+                                    <code class="lang-txt">
+                                        1 A<br>
+                                        B 3<br>
+                                        4 5 C
+                                    </code>
+                                </div>
+                            </li>
+                        </ol>
+            </div>
+            
         </div>
-        
-        <input asp-action="Upload" class="btn btn-primary mt-2" type="submit" value="Upload" />
-    </form>
 </div>
 
 @section Scripts {

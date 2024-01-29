@@ -9,6 +9,7 @@
     <thead>
         <tr>
             <th>DatasetID</th>
+            <th>Name</th>
             <th>State</th>
             <th>Members [#]</th>
             <th>Relations [Ø]</th>
@@ -19,9 +20,10 @@
         @foreach (var item in Model.Statistics ?? new List<DatasetInfoStatistic>())
         {
             <tr>
-                <td>@item.DatasedId</td>
+                <td>@Html.DisplayFor(m => item.DatasetId)</td>
+                <td>@Html.DisplayFor(m => item.DatasetName)</td>
                 <td>@Html.DisplayFor(m => item.State)</td>
-                <td>@item.Members</td>
+                <td>@Html.DisplayFor(m => item.Members)</td>
                 <td>@Html.DisplayFor(m => item.AverageRelation)</td>
                 <td>
                     @Html.ActionLink("Detail", "Detail", "Dataset", null, new { @class = "btn btn-primary"})

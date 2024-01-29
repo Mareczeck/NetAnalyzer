@@ -5,7 +5,8 @@ namespace NetAnalyzer.Domain.Dataset;
 
 public class DatasetInfoStatistic
 {
-    public int DatasedId { get; set; } 
+    public int DatasetId { get; set; } 
+    public string DatasetName { get; set; } 
     
     public State State { get; set; }
 

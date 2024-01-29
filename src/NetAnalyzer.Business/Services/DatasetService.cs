@@ -32,11 +32,11 @@ public class DatasetService : IDatasetService
     }
 
 
-    public int CreateDataset()
+    public int CreateDataset(string name)
     {
-        var ds = new DatasetInfo(State.New);
-        var dataset = dbContext.DataSets.Add(ds);
-
+        var ds = new DatasetInfo(State.New, name);
+        
+        dbContext.DataSets.Add(ds);
         dbContext.SaveChanges();
 
         return ds.Id;
@@ -46,7 +46,8 @@ public class DatasetService : IDatasetService
     {
         var dataSets = dbContext.DataSets.Select(x => new DatasetInfoStatistic()
         {
-            DatasedId = x.Id,
+            DatasetId = x.Id,
+            DatasetName = x.Name,
             State = x.State
         }).ToList();
 
@@ -60,7 +61,7 @@ public class DatasetService : IDatasetService
 
         foreach (var item in dataSets)
         {
-            parameter.Value = item.DatasedId;
+            parameter.Value = item.DatasetId;
             command.CommandText = MEMBER_COUNT_COMMAND;
 
             var result = command.ExecuteScalar();
@@ -99,8 +100,8 @@ public class DatasetService : IDatasetService
             transaction.Commit();
         }
         catch{
-
             transaction.Rollback();
+            throw;
         }
     }
 }
