@@ -6,13 +6,13 @@
 - Infrastruktura
     - [x] Kostra projektu
     - Databáze
-        - [ ] Schema
-        - [ ] Inicializace
+        - [x] Schema
+        - [x] Inicializace
         - Dotazy
-            - [ ] Uložení datasetu
-            - [ ] Načtení datasetu
-            - [ ] Statistika uživatele
-            - [ ] Statistika průměr
+            - [x] Uložení datasetu
+            - [x] Načtení datasetu
+            - [x] Statistika uživatele
+            - [x] Statistika průměr
 - Algoritmy
     - [x] Statistika uživatele
         - Nad seznamem vazeb: select count from distinct (distinct uzel1 union distinct uzel2)
@@ -22,9 +22,9 @@
     - [ ] Výpočet n-sousedů
     - [ ] Výpočet skupin
 - GUI
-    - [ ] Načítání z formuláře
-    - [ ] Seznam datasetů
-    - [ ] Statistiky datasetu
+    - [x] Načítání z formuláře
+    - [x] Seznam datasetů
+    - [x] Statistiky datasetu
     - [ ] Graf d3
     - [ ] Klikací přátelé pře n-sousedů
 - Joby    
