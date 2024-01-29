@@ -34,7 +34,7 @@ public class DatabaseQueriesTest
             // Run the test against one instance of the context
             using (var context = new AppDbContext(options))
             {
-                var dataSet = new DatasetInfo(State.New);
+                var dataSet = new DatasetInfo(State.New, "Some name");
                 var e = context.DataSets.Add(dataSet);
 
                 context.Relations.Add(new Relation(dataSet.Id,1,2));

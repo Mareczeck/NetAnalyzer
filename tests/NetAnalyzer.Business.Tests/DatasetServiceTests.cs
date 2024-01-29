@@ -30,7 +30,7 @@ public class DatasetServiceTests
                 var dataLoader = new NetworkDataLoaderService();
 
                 var service = new DatasetService(dataLoader, context);
-                var id = service.CreateDataset();
+                var id = service.CreateDataset("name");
                 service.ProcessDataset(1, fs);
             }
         }
