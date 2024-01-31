@@ -43,7 +43,17 @@ public class DatasetService : IDatasetService
         return ds.Id;
     }
 
-    public GraphModel LoadDataset(int datasetId)
+    public GraphModel LoadDatasetWithMaxDistance(int datasetId)
+    {
+        var model = LoadDataset(datasetId);
+
+        // Count max distance
+        graphProcessor.CalculateMaximalDistanceBetweenNodes(model);
+
+        return model;
+    }
+
+    private GraphModel LoadDataset(int datasetId)
     {        
         var memberOneQuery = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(r => r.MemberOne);
         var memberTwoQuery = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(r => r.MemberTwo);
@@ -55,10 +65,9 @@ public class DatasetService : IDatasetService
             Links = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(x => new Link(x.MemberOne, x.MemberTwo)).ToList()
         };
 
-        model.MaximumDistance = graphProcessor.MaximalDistanceBetweenNodes(model);
-
         return model;
     } 
+
     public DatasetInfoStatistic LoadDatasetStatistic(int datasetId)
     {
         var dataset = dbContext.DataSets.FirstOrDefault(x => x.Id == datasetId);
@@ -122,6 +131,29 @@ public class DatasetService : IDatasetService
         }
     }
     
+
+    public AverageLinksModel GetAverageLinksByDistance(int datasetId, int distance)
+    {        
+        var model = LoadDataset(datasetId);
+        
+        // Count average links by distance
+        return new AverageLinksModel() 
+        { 
+            AverageLinks = graphProcessor.GetAverageLinks(model, distance) 
+        };
+    }
+
+    public ReachableNodesModel GetReachableNodesForNode(int datasetId, int node, int distance)
+    {
+        var model = LoadDataset(datasetId);
+        model.Preprocess();
+
+        var nodesDictionary = graphProcessor.ReachableLinksForNode(model.Nodes.FirstOrDefault(x => x.Id == node), distance);
+        return new ReachableNodesModel() 
+        { 
+            Nodes = nodesDictionary.ToDictionary(pair => pair.Key.Id, pair => pair.Value)
+        };
+    }
     private void GetDbStatisticForDatasets(params DatasetInfoStatistic[] statistics)
     {
         var connection = dbContext.Database.GetDbConnection();
@@ -153,4 +185,5 @@ public class DatasetService : IDatasetService
 
         connection.Close();
     }
+
 }

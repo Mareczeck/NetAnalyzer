@@ -2,14 +2,12 @@ using NetAnalyzer.Domain.Dataset;
 
 public class GraphProcessor : IGraphProcessor
 {
-
-    public int MaximalDistanceBetweenNodes(GraphModel graph)
+    public void CalculateMaximalDistanceBetweenNodes(GraphModel graph)
     {
         int maxDistance = 0;
-
         graph.Preprocess();
 
-        // Process each connected component in parallel
+        // Process each node in parallel
         Parallel.ForEach(graph.Nodes, node =>
         {
             // Perform Dijkstra's algorithm to find maximal distance
@@ -23,8 +21,67 @@ public class GraphProcessor : IGraphProcessor
             }
         });
 
-        return maxDistance;
+        graph.MaximumDistance = maxDistance;
     }
+
+    public decimal GetAverageLinks(GraphModel graph, int distance)
+    {
+        graph.Preprocess();
+        
+        var nodes = graph.Nodes;
+        int totalLinks = 0;
+        int totalNodes = nodes.Count;
+
+        Parallel.ForEach(nodes, node =>
+        {
+            lock (this)
+            {
+                totalLinks += ReachableLinksForNode(node, distance).Count - 1;
+            }
+        });
+
+        return totalNodes > 0 ? (decimal)totalLinks / totalNodes : 0;
+    }
+
+    public Dictionary<Node, int> ReachableLinksForNode(Node node, int definedDistance)
+    {
+        HashSet<Node> visited = new HashSet<Node>();
+        Dictionary<Node, int> distances = new Dictionary<Node, int>();
+        distances[node] = 0;
+
+        visited.Add(node);
+
+        for (int step = 0; step < definedDistance; step++)
+        {
+            bool newNeighbours = false;
+            Dictionary<Node, int> newDistances = new Dictionary<Node, int>();
+
+            foreach (var currentNode in distances.Where(x => x.Value == step))
+            {
+                foreach (var neighbor in currentNode.Key.Neighbors)
+                {
+                    if (!visited.Contains(neighbor))
+                    {
+                        visited.Add(neighbor);
+                        newDistances[neighbor] = step + 1;
+                        newNeighbours = true;
+                    }
+                }
+            }
+
+            foreach (var entry in newDistances)
+            {
+                distances[entry.Key] = entry.Value;
+            }
+
+            // If last step did not add any neighbour, we can stop calculation
+            if(!newNeighbours)
+                break;
+        }
+
+        return distances; 
+    }
+
 
     private int Dijkstra(Node startNode, GraphModel graph)
     {
@@ -56,7 +113,8 @@ public class GraphProcessor : IGraphProcessor
             }
         }
 
-        int currentMaxDistance = distances.Max(kv => kv.Value);
+        // Counting only reachable distances
+        int currentMaxDistance = distances.Where(x => x.Value != int.MaxValue).Max(kv => kv.Value);
         if (currentMaxDistance > maxDistance)
             maxDistance = currentMaxDistance;
     

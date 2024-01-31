@@ -8,6 +8,10 @@ public interface IDatasetService {
     List<DatasetInfoStatistic>? LoadDatasetStatistics();
 
     DatasetInfoStatistic LoadDatasetStatistic(int datasetId);
-    GraphModel LoadDataset(int datasetId);
+    GraphModel LoadDatasetWithMaxDistance(int datasetId);
+
+    AverageLinksModel GetAverageLinksByDistance(int datasetId, int distance);
+
+    ReachableNodesModel GetReachableNodesForNode(int datasetId, int node, int distance);
     void ProcessDataset(int datasetId, Stream stream);
 }

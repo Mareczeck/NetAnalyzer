@@ -43,13 +43,15 @@
 <h2 class="mb-0">Dataset graph</h2>
 <div id="maxDistance" style="display: none">
     <label>Select distance:</label>
-        <div class="d-flex">
+    <div class="d-flex">
         <span class="me-3" id="minValue">1</span>
         <span>
             <input type="text" id="numericRangePicker" data-slider-min="1" data-slider-max="1" data-slider-step="1" value="1">
         </span>    
         <span class="ms-3" id="maxValue"></span>
     </div>
+    <label>Average links #:</label>
+    <div id="averageLinks"></div>
 </div>
 <div id="plotter">
     Loading data...
@@ -65,7 +67,7 @@
     <script type="text/javascript" src="/js/graph.js"></script>
     <!-- Bootstrap Slider JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
-<
+
     <script type="text/javascript">
 
         function updateMaxRange(maxValue) {            
@@ -76,9 +78,64 @@
         }
 
         $(function() {
+
+            $('#plotter').on('click', "circle", function()
+            { 
+                $("#plotter circle").attr("fill", "#1f77b4")
+                var id = $(this).attr("data-id");
+                var distance = $("#numericRangePicker").val();
+                var baseUrl = '@Url.Action("GetReachableNodesForNodeByDistance", new { id = Model.DatasetId })';
+                var urlNodeLinks = baseUrl + '?nodeId=' + id+ '&distance=' + distance;
+
+                $.ajax({
+                    type: "GET",
+                    url: urlNodeLinks,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {                      
+                        $('#plotter').find('circle[data-id="' + id + '"]').attr('fill', '#ff0000');  
+
+                        // Iterate over the properties of the "nodes" object
+                        for (var key in data.nodes) {                          
+                            $('#plotter').find('circle[data-id="' + key + '"]').attr('fill', '#ff0000');                           
+                        }
+
+                        // Iterate through each node ID in the array
+                        
+                        @* data.nodes.forEach(function(nodeId) {
+                            // Find the circle element with the corresponding node ID and set its "fill" attribute
+                            $('#plotter').find('circle[data-id="' + nodeId + '"]').attr('fill', '#ff0000');
+                        }); *@
+                    },
+                    error: function () {
+                        alert("Error while loading data");
+                    }
+                });
+            });
+
+            $('#numericRangePicker').on('change', function(event) {
+                $("#plotter circle").attr("fill", "#1f77b4")
+
+                var baseUrl = '@Url.Action("GetAverageLinksForDistance", new { id = Model.DatasetId })';
+                var urlWithDistance = baseUrl + '?distance=' + event.value.newValue;
+
+                $.ajax({
+                    type: "GET",
+                    url: urlWithDistance,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        $("#averageLinks").text(data.averageLinks);
+                    },
+                    error: function () {
+                        alert("Error while loading data");
+                    }
+                });
+            });
+
             $.ajax({
                 type: "GET",
-                url: '@Url.Action("GetNodes", values: new { id = Model.DatasetId})',
+                url: '@Url.Action("GetGraphModel", values: new { id = Model.DatasetId})',
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {

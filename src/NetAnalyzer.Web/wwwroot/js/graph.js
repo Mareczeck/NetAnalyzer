@@ -42,6 +42,7 @@ function createGraph(data)
         .data(nodes)
         .join("circle")
         .attr("r", 5)
+        .attr("data-id", d => d.id)
         .attr("data-relations", d => d.relations)
         .attr("fill", d => color(d.group));
 

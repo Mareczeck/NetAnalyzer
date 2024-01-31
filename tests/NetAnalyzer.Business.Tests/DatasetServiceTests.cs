@@ -9,9 +9,19 @@ namespace NetAnalyzer.Business.Tests;
 
 public class MockGraphProcessor : IGraphProcessor
 {
-    public int MaximalDistanceBetweenNodes(GraphModel graph)
+    public void CalculateMaximalDistanceBetweenNodes(GraphModel graph)
+    {
+        graph.MaximumDistance = 0;
+    }
+
+    public decimal GetAverageLinks(GraphModel graph, int distance)
     {
         return 0;
+    }
+
+    public Dictionary<Node, int> ReachableLinksForNode(Node node, int definedDistance)
+    {
+        throw new NotImplementedException();
     }
 }
 

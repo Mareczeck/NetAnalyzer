@@ -9,21 +9,29 @@ public class GraphModel
     
     public int MaximumDistance { get; set; }
 
+    [JsonIgnore]
+    public bool IsProcessed { get; set; }
+
+
     public void Preprocess()
     {
-        // Vytvořte slovník pro rychlý přístup k uzlům podle jejich id
-        var nodeDictionary = Nodes.ToDictionary(node => node.Id);
-
-        // Pro každý uzel vytvořte seznam jeho sousedů na základě vazeb
-        foreach (var link in Links)
+        if(!IsProcessed)
         {
-            if (nodeDictionary.TryGetValue(link.Source, out var sourceNode) && 
-                nodeDictionary.TryGetValue(link.Target, out var targetNode))
+            // Creates dictionary for quick access
+            var nodeDictionary = Nodes.ToDictionary(node => node.Id);
+
+            // Create neighbours for each node
+            foreach (var link in Links)
             {
-                sourceNode.Neighbors.Add(targetNode);
-                targetNode.Neighbors.Add(sourceNode); // Přidání zpětného spojení pro neorientovaný graf
+                if (nodeDictionary.TryGetValue(link.Source, out var sourceNode) && 
+                    nodeDictionary.TryGetValue(link.Target, out var targetNode))
+                {
+                    sourceNode.Neighbors.Add(targetNode);
+                    targetNode.Neighbors.Add(sourceNode); // reverse link for unordered graph
+                }
             }
         }
+        IsProcessed = true;
     }
 }
 

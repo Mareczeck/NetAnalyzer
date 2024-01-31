@@ -34,8 +34,18 @@ public class DatasetController : Controller
         return View(model);
     }
     
-    public IActionResult GetNodes(int id)
+    public IActionResult GetGraphModel(int id)
     {
-        return Json(datasetService.LoadDataset(id));
+        return Json(datasetService.LoadDatasetWithMaxDistance(id));
+    }
+
+    public IActionResult GetAverageLinksForDistance(int id, int distance)
+    {
+        return Json(datasetService.GetAverageLinksByDistance(id, distance));
+    }
+
+    public IActionResult GetReachableNodesForNodeByDistance(int id, int nodeId, int distance)
+    {
+        return Json(datasetService.GetReachableNodesForNode(id, nodeId, distance));
     }
 }
