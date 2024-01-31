@@ -1,5 +1,9 @@
 # NetAnalyzer
 
+Demo
+===========
+https://netanalyzer.azurewebsites.net/
+
 Úkoly
 ===========
 
@@ -18,8 +22,8 @@
         - Nad seznamem vazeb: select count from distinct (distinct uzel1 union distinct uzel2)
     - [x] Statistika průměr
         - count by uzel1 + count by uzel2 / Počet uživatelů
-    - [ ] Výpočet max vzdálenosti (Dijsktra)
-    - [ ] Výpočet n-sousedů
+    - [x] Výpočet max vzdálenosti (Dijsktra)
+    - [x] Výpočet n-sousedů
     - [ ] Výpočet skupin
 - GUI
     - [x] Načítání z formuláře
@@ -27,5 +31,3 @@
     - [x] Statistiky datasetu
     - [ ] Graf d3
     - [ ] Klikací přátelé pře n-sousedů
-- Joby    
-    - [ ] Výpočet statistik
