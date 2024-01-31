@@ -36,7 +36,8 @@ public class DatabaseQueriesTest
             {
                 var dataSet = new DatasetInfo(State.New, "Some name");
                 var e = context.DataSets.Add(dataSet);
-
+                context.SaveChanges();
+                
                 context.Relations.Add(new Relation(dataSet.Id,1,2));
                 context.Relations.Add(new Relation(dataSet.Id,2,3));
                 context.Relations.Add(new Relation(dataSet.Id,3,1));

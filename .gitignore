@@ -488,3 +488,6 @@ $RECYCLE.BIN/
 src/NetAnalyzer.Web/DataStorage.db
 src/NetAnalyzer.Web/DataStorage.db-shm
 src/NetAnalyzer.Web/DataStorage.db-wal
+src/NetAnalyzer.Web/wwwroot/AppData/DataStorage.db
+src/NetAnalyzer.Web/wwwroot/AppData/DataStorage.db-shm
+src/NetAnalyzer.Web/wwwroot/AppData/DataStorage.db-wal

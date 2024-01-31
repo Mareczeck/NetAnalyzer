@@ -1,12 +1,99 @@
 ﻿@using NetAnalyzer.Domain.Dataset;
 
-@model DatasetStatisticsViewModel
+@model DatasetInfoStatistic
 
 @{
     ViewData["Title"] = "Detail";
 }
 
-@section Scripts {
-    
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Dataset statistics</h2>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="fw-bold">Id</h5>
+                        <p>@Model.DatasetId</p>
+                    </div>
+                    <div class="col">
+                        <h5 class="fw-bold">Name</h5>
+                        <p>@Model.DatasetName</p>
+                    </div>
+                    <div class="col">
+                        <h5 class="fw-bold">Members Count [#]</h5>
+                        <p>@Model.Members</p>
+                    </div>
+                    <div class="col">
+                        <h5 class="fw-bold">Average Relations [Ø]</h5>
+                        <p>@Model.AverageRelation</p>
+                    </div>
+                    <div class="col">
+                        <h5 class="fw-bold">State</h5>
+                        <p>@Html.DisplayFor(x => x.State)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<h2 class="mb-0">Dataset graph</h2>
+<div id="maxDistance" style="display: none">
+    <label>Select distance:</label>
+        <div class="d-flex">
+        <span class="me-3" id="minValue">1</span>
+        <span>
+            <input type="text" id="numericRangePicker" data-slider-min="1" data-slider-max="1" data-slider-step="1" value="1">
+        </span>    
+        <span class="ms-3" id="maxValue"></span>
+    </div>
+</div>
+<div id="plotter">
+    Loading data...
+</div>
+
+@section Styles {
+    <!-- Bootstrap Slider CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/css/bootstrap-slider.min.css">
+}
+@section Scripts {
+    @* Import d3 library *@
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="text/javascript" src="/js/graph.js"></script>
+    <!-- Bootstrap Slider JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.min.js"></script>
+<
+    <script type="text/javascript">
+
+        function updateMaxRange(maxValue) {            
+            $('#maxDistance').show();
+            $('#numericRangePicker').attr('data-slider-max', maxValue);
+            $('#maxValue').text(maxValue);
+            $('#numericRangePicker').slider();
+        }
+
+        $(function() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetNodes", values: new { id = Model.DatasetId})',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    var max = data.maximumDistance;
+                    updateMaxRange(max);
+                    var node = createGraph(data);
+                    $("#plotter").empty(); 
+                    $("#plotter").append(node);
+                },
+                error: function () {
+                    alert("Error while loading data");
+                }
+            });
+        })
+        
+
+    </script>
 }

@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NetAnalyzer.Business;
+using NetAnalyzer.Domain.Dataset;
 using NetAnalyzer.Web.Models;
 
 namespace NetAnalyzer.Web.Controllers;
@@ -22,15 +23,19 @@ public class DatasetController : Controller
     {
         var model = new DatasetStatisticsViewModel()
         {
-            Statistics = datasetService.LoadDatasets()
+            Statistics = datasetService.LoadDatasetStatistics()
         };
         return View(model);
     }
 
     public IActionResult Detail(int id)
     {
-        return View();
+        var model = datasetService.LoadDatasetStatistic(id);
+        return View(model);
     }
-
-
+    
+    public IActionResult GetNodes(int id)
+    {
+        return Json(datasetService.LoadDataset(id));
+    }
 }

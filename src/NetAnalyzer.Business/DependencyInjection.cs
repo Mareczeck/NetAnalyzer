@@ -8,6 +8,7 @@ public static class DependencyInjection
     public static IServiceCollection AddBusiness(this IServiceCollection services)
     {
         services
+            .AddScoped<IGraphProcessor,GraphProcessor>()
             .AddScoped<IDatasetService,DatasetService>();
 
         return services;

@@ -11,6 +11,7 @@ namespace NetAnalyzer.Business;
 public class DatasetService : IDatasetService
 {
     private readonly INetworkDataLoaderService networkDataLoader;
+    private readonly IGraphProcessor graphProcessor;
     private readonly AppDbContext dbContext;
 
     private const string MEMBER_COUNT_COMMAND = @"SELECT COUNT(*) FROM (
@@ -18,17 +19,17 @@ public class DatasetService : IDatasetService
         UNION
         SELECT [MemberTwo] FROM [Relations] WHERE DatasetID = @DatasetId);";
 
-        
     private const string SUM_RELATIONS_COMMAND = @"SELECT SUM(cnt) FROM (
         SELECT count(MemberOne) as cnt FROM [Relations] WHERE DatasetID = @DatasetId GROUP BY MemberOne 
         UNION ALL
         SELECT count(MemberTwo) as cnt FROM [Relations] WHERE DatasetID = @DatasetId GROUP BY MemberTwo)";
 
 
-    public DatasetService(INetworkDataLoaderService networkDataLoader, AppDbContext dbContext)
+    public DatasetService(INetworkDataLoaderService networkDataLoader, AppDbContext dbContext, IGraphProcessor graphProcessor)
     {
         this.networkDataLoader = networkDataLoader;
         this.dbContext = dbContext;
+        this.graphProcessor = graphProcessor;
     }
 
 
@@ -42,15 +43,29 @@ public class DatasetService : IDatasetService
         return ds.Id;
     }
 
-    public List<DatasetInfoStatistic>? LoadDatasets()
-    {
-        var dataSets = dbContext.DataSets.Select(x => new DatasetInfoStatistic()
-        {
-            DatasetId = x.Id,
-            DatasetName = x.Name,
-            State = x.State
-        }).ToList();
+    public GraphModel LoadDataset(int datasetId)
+    {        
+        var memberOneQuery = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(r => r.MemberOne);
+        var memberTwoQuery = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(r => r.MemberTwo);
 
+        var model = new GraphModel()
+        {
+            // Unique nodes
+            Nodes = memberOneQuery.Union(memberTwoQuery).Select(x => new Node(x,1)).ToList(),
+            Links = dbContext.Relations.Where(r => r.DatasetID == datasetId).Select(x => new Link(x.MemberOne, x.MemberTwo)).ToList()
+        };
+
+        model.MaximumDistance = graphProcessor.MaximalDistanceBetweenNodes(model);
+
+        return model;
+    } 
+    public DatasetInfoStatistic LoadDatasetStatistic(int datasetId)
+    {
+        var dataset = dbContext.DataSets.FirstOrDefault(x => x.Id == datasetId);
+        if(dataset == null)
+            throw new Exception("Dataset not found");
+            
+        
         var connection = dbContext.Database.GetDbConnection();
         connection.Open();
 
@@ -59,26 +74,28 @@ public class DatasetService : IDatasetService
         parameter.ParameterName = "@DatasetId";
         command.Parameters.Add(parameter);
 
-        foreach (var item in dataSets)
+        var statistic = new DatasetInfoStatistic()
         {
-            parameter.Value = item.DatasetId;
-            command.CommandText = MEMBER_COUNT_COMMAND;
+            DatasetId = datasetId,
+            DatasetName = dataset.Name,
+            State = dataset.State
+        };
 
-            var result = command.ExecuteScalar();
-            var count = result != null ? Convert.ToInt32(result) : throw new Exception();
-            item.Members = count;
+        GetDbStatisticForDatasets(statistic);
+        return statistic;
+    }
 
-            if(count > 0){
-                command.CommandText = SUM_RELATIONS_COMMAND;
+    public List<DatasetInfoStatistic>? LoadDatasetStatistics()
+    {
+        var dataSets = dbContext.DataSets.Select(x => new DatasetInfoStatistic()
+        {
+            DatasetId = x.Id,
+            DatasetName = x.Name,
+            State = x.State
+        }).ToArray();
 
-                result = command.ExecuteScalar();
-                var sum = result != null ? Convert.ToInt32(result) : throw new Exception();
-                item.AverageRelation = (decimal)sum / count;
-            }        
-        }
-        
-        connection.Close();
-        return dataSets;
+        GetDbStatisticForDatasets(dataSets);
+        return dataSets.ToList();
     }
 
     public void ProcessDataset(int datasetId, Stream stream)
@@ -103,5 +120,37 @@ public class DatasetService : IDatasetService
             transaction.Rollback();
             throw;
         }
+    }
+    
+    private void GetDbStatisticForDatasets(params DatasetInfoStatistic[] statistics)
+    {
+        var connection = dbContext.Database.GetDbConnection();
+        connection.Open();
+
+        using var command = connection.CreateCommand();
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@DatasetId";
+        command.Parameters.Add(parameter);
+
+        foreach(var item in statistics)
+        {
+            parameter.Value = item.DatasetId;
+            command.CommandText = MEMBER_COUNT_COMMAND;
+
+            var result = command.ExecuteScalar();
+            var count = result != null ? Convert.ToInt32(result) : throw new Exception();
+            item.Members = count;
+
+            if (count > 0)
+            {
+                command.CommandText = SUM_RELATIONS_COMMAND;
+
+                result = command.ExecuteScalar();
+                var sum = result != null ? Convert.ToInt32(result) : throw new Exception();
+                item.AverageRelation = (decimal)sum / count;
+            }
+        }
+
+        connection.Close();
     }
 }

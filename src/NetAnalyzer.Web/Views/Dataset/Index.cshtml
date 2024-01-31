@@ -26,7 +26,7 @@
                 <td>@Html.DisplayFor(m => item.Members)</td>
                 <td>@Html.DisplayFor(m => item.AverageRelation)</td>
                 <td>
-                    @Html.ActionLink("Detail", "Detail", "Dataset", null, new { @class = "btn btn-primary"})
+                    @Html.ActionLink("Detail", "Detail", "Dataset", new { @id = item.DatasetId }, new { @class = "btn btn-primary"})
                 </td>
             </tr>
         }
