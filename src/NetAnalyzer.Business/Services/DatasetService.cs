@@ -25,6 +25,8 @@ public class DatasetService : IDatasetService
         SELECT count(MemberTwo) as cnt FROM [Relations] WHERE DatasetID = @DatasetId GROUP BY MemberTwo)";
 
 
+    private const string CLEAN_COMMAND = "DELETE FROM Relations; DELETE FROM DatasetInfos;";
+
     public DatasetService(INetworkDataLoaderService networkDataLoader, AppDbContext dbContext, IGraphProcessor graphProcessor)
     {
         this.networkDataLoader = networkDataLoader;
@@ -131,6 +133,11 @@ public class DatasetService : IDatasetService
         }
     }
     
+    public void CleanData()
+    {
+        dbContext.Database.ExecuteSqlRaw(CLEAN_COMMAND);
+
+    }
 
     public AverageLinksModel GetAverageLinksByDistance(int datasetId, int distance)
     {        

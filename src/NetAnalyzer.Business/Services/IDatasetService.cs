@@ -14,4 +14,6 @@ public interface IDatasetService {
 
     ReachableNodesModel GetReachableNodesForNode(int datasetId, int node, int distance);
     void ProcessDataset(int datasetId, Stream stream);
+
+    void CleanData();
 }

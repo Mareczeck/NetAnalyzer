@@ -45,6 +45,13 @@ public class HomeController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    
+    public IActionResult Clean()
+    {
+        datasetService.CleanData();
+        return Ok();
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
