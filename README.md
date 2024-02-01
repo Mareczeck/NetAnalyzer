@@ -29,5 +29,5 @@ https://netanalyzer.azurewebsites.net/
     - [x] Načítání z formuláře
     - [x] Seznam datasetů
     - [x] Statistiky datasetu
-    - [ ] Graf d3
-    - [ ] Klikací přátelé pře n-sousedů
+    - [x] Graf d3
+    - [x] Klikací přátelé pře n-sousedů
